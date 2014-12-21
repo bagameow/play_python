@@ -1,36 +1,46 @@
+# coding=UTF-8
+# -*- coding: <encoding name> -*-
+
 import re
 
-def printTest(str):
-    print str
-    return str
 
-file = open("parsed.xml", "r")
-#content = file.read()
-#print content
-#file.close()
+def deal_with_note(l):
+
+    global startNote
+
+    m = re.search("(.*)</Notes>", l)
+    if m is not None:
+        s = m.group(1)
+        print s.replace(",", "，")
+        startNote = 0
+        return
+    else:
+        print l.replace(",", "，")
+
+
+myFile = open("parsed.xml", "r")
 i = 1
 startNote = 0
 while True:
-    line = file.readline()
-    if not line: break
-    if i > 1000: 
+    line = myFile.readline()
+    if not line:
         break
-    i = i + 1
     if startNote == 1:
-
-
-    m = re.search("<FormattedID>(.*)</FormattedID>" , line)
-    if m is not None: 
-        print m.group(1),
+        deal_with_note(line)
     else:
-        m = re.search("<Notes>(.*)$", line)
+        # if i > 1000:
+        #    break
+        i += 1
+
+        m = re.search("<FormattedID>(.*)</FormattedID>", line)
         if m is not None:
-            startNote = 1
-            print "note found: " + m.group(1)
+            print "\n[[ " + m.group(1) + " ]]\n\n"
+        else:
+            m = re.search("<Notes>(.*)$", line)
+            if m is not None:
+                startNote = 1
 
-
-
-file.close()
+myFile.close()
 
 
 
