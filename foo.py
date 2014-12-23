@@ -18,27 +18,66 @@ def deal_with_note(l):
         print l.replace(",", "，")
 
 
+def deal_with_name(line):
+    m = re.search("<Name>(.*)</Name>", line)
+    if m:
+        print "\n[Name] " + m.group(1)
+        return True
+    return False
+
+def deal_with_id(line):
+    m = re.search("<FormattedID>(.*)</FormattedID>", line)
+    if m:
+        print "\n=============================================================\n\n[ID] " + m.group(1)
+        return True
+    return False
+
 myFile = open("parsed.xml", "r")
-i = 1
 startNote = 0
+
+
+def found_begin_of_note(line):
+    global startNote
+    m = re.search("<Notes>(.*)$", line)
+    if m:
+        print "\n[Note]\n\n" + m.group(1)
+        startNote = 1
+        return True
+    return False
+
+i = 0
+
+
+def deal_with_test_folder(line):
+    m = re.search("<TestFolder ", line)
+    if m:
+        m2 = re.search("refObjectName=\"(.*)\" type=", line)
+        if m2:
+            print "\n[TestFolder] " + m2.group(1) + "\n"
+            return True
+        else:
+            exit(-1)
+    return False
+
 while True:
+    i += 1
     line = myFile.readline()
     if not line:
         break
+
     if startNote == 1:
         deal_with_note(line)
-    else:
-        # if i > 1000:
-        #    break
-        i += 1
+    elif deal_with_id(line):
+        pass
+    elif deal_with_name(line):
+        pass
+    elif found_begin_of_note(line):
+        pass
+    elif deal_with_test_folder(line):
+        pass
 
-        m = re.search("<FormattedID>(.*)</FormattedID>", line)
-        if m is not None:
-            print "\n[[ " + m.group(1) + " ]]\n\n"
-        else:
-            m = re.search("<Notes>(.*)$", line)
-            if m is not None:
-                startNote = 1
+    if i > 1000:
+        break
 
 myFile.close()
 
