@@ -21,14 +21,14 @@ def deal_with_note(l):
 def deal_with_name(line):
     m = re.search("<Name>(.*)</Name>", line)
     if m:
-        print "\n[Name] " + m.group(1)
+        print "\n:TestCaseName:" + m.group(1)
         return True
     return False
 
 def deal_with_id(line):
     m = re.search("<FormattedID>(.*)</FormattedID>", line)
     if m:
-        print "\n=============================================================\n\n[ID] " + m.group(1)
+        print "\n==========================================================\n:TestCaseId:" + m.group(1)
         return True
     return False
 
@@ -40,7 +40,7 @@ def found_begin_of_note(line):
     global startNote
     m = re.search("<Notes>(.*)$", line)
     if m:
-        print "\n[Note]\n\n" + m.group(1)
+        print "\n:TestCaseNote:\n\n" + m.group(1)
         startNote = 1
         return True
     return False
@@ -53,7 +53,7 @@ def deal_with_test_folder(line):
     if m:
         m2 = re.search("refObjectName=\"(.*)\" type=", line)
         if m2:
-            print "\n[TestFolder] " + m2.group(1) + "\n"
+            print "\n:TestCaseFolder:" + m2.group(1) + "\n"
             return True
         else:
             exit(-1)
@@ -76,8 +76,8 @@ while True:
     elif deal_with_test_folder(line):
         pass
 
-    if i > 1000:
-        break
+    # if i > 1000:
+    #     break
 
 myFile.close()
 
